@@ -32,12 +32,10 @@ namespace SecureAuthSystem.Controllers
             var result =
                 await _authService.Register(registerDto);
 
-
             return Ok(new
             {
-                Message = result
+                message = "User Registered Successfully"
             });
-
         }
 
 

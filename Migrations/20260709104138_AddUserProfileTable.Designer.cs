@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SecureAuthSystem.Data;
 
@@ -11,9 +12,11 @@ using SecureAuthSystem.Data;
 namespace SecureAuthSystem.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260709104138_AddUserProfileTable")]
+    partial class AddUserProfileTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,33 +110,34 @@ namespace SecureAuthSystem.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SecureAuthSystem.Models.UserProfile", b =>
+            modelBuilder.Entity("UserProfile", b =>
                 {
-                    b.Property<int>("ProfileId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("City")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
+                    b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProfileId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -163,11 +167,11 @@ namespace SecureAuthSystem.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("SecureAuthSystem.Models.UserProfile", b =>
+            modelBuilder.Entity("UserProfile", b =>
                 {
                     b.HasOne("SecureAuthSystem.Models.User", "User")
                         .WithOne("UserProfile")
-                        .HasForeignKey("SecureAuthSystem.Models.UserProfile", "UserId")
+                        .HasForeignKey("UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

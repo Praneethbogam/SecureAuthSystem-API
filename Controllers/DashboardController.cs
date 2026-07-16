@@ -1,131 +1,44 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+using SecureAuthSystem.Services.Interface;
 
 namespace SecureAuthSystem.Controllers
 {
-
-
     [Route("api/[controller]")]
     [ApiController]
-
-
+    [Authorize]
     public class DashboardController : ControllerBase
     {
+        private readonly IDashboardService _dashboardService;
 
-
-
-
-        // api/dashboard/profile
-
-
-        [Authorize]
-
-        [HttpGet("profile")]
-
-        public IActionResult Profile()
+        public DashboardController(IDashboardService dashboardService)
         {
-
-
-
-            var username =
-            User.FindFirst(
-            ClaimTypes.Name)?.Value;
-
-
-
-
-            var role =
-            User.FindFirst(
-            ClaimTypes.Role)?.Value;
-
-
-
-
-
-            return Ok(new
-            {
-
-                Message = "Welcome User",
-
-                User = username,
-
-                Role = role
-
-            });
-
-
-
+            _dashboardService = dashboardService;
         }
 
-
-
-
-
-
-
-        // api/dashboard/admin
-
-
-        [Authorize(Roles = "Admin")]
-
-        [HttpGet("admin")]
-
-
-        public IActionResult AdminDashboard()
+        [HttpGet]
+        public async Task<IActionResult> GetDashboard()
         {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized();
 
+            var dashboard = await _dashboardService.GetDashboardAsync(email);
 
-            return Ok(new
-            {
+            if (dashboard == null)
+                return NotFound();
 
-                Message =
-                "Welcome Admin Dashboard"
-
-
-            });
-
-
-
+            return Ok(dashboard);
         }
 
-
-
-
-
-
-
-
-
-        // api/dashboard/user
-
-
-        [Authorize(Roles = "User")]
-
-        [HttpGet("user")]
-
-
-        public IActionResult UserDashboard()
+        [HttpGet("RecentUsers")]
+        public async Task<IActionResult> GetRecentUsers()
         {
+            var users = await _dashboardService.GetRecentUsersAsync();
 
-
-            return Ok(new
-            {
-
-                Message =
-                "Welcome User Dashboard"
-
-            });
-
-
-
+            return Ok(users);
         }
-
-
-
     }
-
-
 }

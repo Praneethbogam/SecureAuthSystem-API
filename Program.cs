@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 
 // Dependency Injection
+// Dependency Injection
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -35,8 +36,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
 
-builder.Services.AddScoped<JWTHelper>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+builder.Services.AddScoped<JwtHelper>();
 
 
 // CORS for Angular
